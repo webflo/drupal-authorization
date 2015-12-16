@@ -134,6 +134,13 @@ class AuthorizationProfileForm extends EntityForm {
           'effect' => 'fade',
         ),
       );
+    } else {
+      $form['provider'] = array(
+        '#type' => 'markup',
+        '#markup' => $this->t('<strong>Warning</strong>: You need to download and enable an Authorization Provider plugin.
+          For example: <em>ldap_authorization</em>.
+          '),
+      );
     }
 
     $consumer_options = $this->getConsumerOptions();
@@ -154,6 +161,13 @@ class AuthorizationProfileForm extends EntityForm {
           'method' => 'replace',
           'effect' => 'fade',
         ),
+      );
+    } else {
+      $form['consumer'] = array(
+        '#type' => 'markup',
+        '#markup' => $this->t('<strong>Warning</strong>: You need to download and enable an Authorization Consumer plugin.
+          For example: <em>authorization_drupal_roles</em> or <em>og_authorization</em>.
+          '),
       );
     }
     return $form;
