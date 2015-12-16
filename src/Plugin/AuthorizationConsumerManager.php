@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\authorization\Plugin\AuthorizationConsumerManager.
+ * Contains \Drupal\authorization\Plugin\AuthorizationAPIConsumerManager.
  */
 
 namespace Drupal\authorization;
@@ -14,10 +14,10 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 /**
  * Provides the Authorization consumer plugin manager.
  */
-class AuthorizationConsumerManager extends DefaultPluginManager {
+class AuthorizationAPIConsumerManager extends DefaultPluginManager {
 
   /**
-   * Constructor for AuthorizationConsumerManager objects.
+   * Constructor for AuthorizationAPIConsumerManager objects.
    *
    * @param \Traversable $namespaces
    *   An object that implements \Traversable which contains the root paths

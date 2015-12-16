@@ -12,7 +12,7 @@ use Drupal\Component\Annotation\Plugin;
 /**
  * Defines a Authorization provider item annotation object.
  *
- * @see \Drupal\authorization\Plugin\AuthorizationProviderManager
+ * @see \Drupal\authorization\Plugin\AuthorizationAPIProviderManager
  * @see plugin_api
  *
  * @Annotation
@@ -36,3 +36,4 @@ class AuthorizationProvider extends Plugin {
   public $label;
 
 }
+ldap_authorization
