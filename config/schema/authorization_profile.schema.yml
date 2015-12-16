@@ -1,0 +1,12 @@
+authorization.authorization_profile.*:
+  type: config_entity
+  label: 'Authorization profile config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    uuid:
+      type: string
