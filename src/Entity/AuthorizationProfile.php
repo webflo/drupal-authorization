@@ -54,4 +54,33 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
    */
   protected $label;
 
+  /**
+   * The Authorization provider.
+   *
+   * @var string
+   */
+  protected $provider;
+
+  /**
+   * The Authorization consumer.
+   *
+   * @var string
+   */
+  protected $consumer;
+
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getProviderId() {
+    return $this->provider;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getConsumerId() {
+    return $this->consumer;
+  }
+
 }
