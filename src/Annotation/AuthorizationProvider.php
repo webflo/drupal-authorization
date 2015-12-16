@@ -12,7 +12,7 @@ use Drupal\Component\Annotation\Plugin;
 /**
  * Defines a Authorization provider item annotation object.
  *
- * @see \Drupal\authorization\Plugin\AuthorizationAPIProviderManager
+ * @see \Drupal\authorization\Plugin\AuthorizationProviderManager
  * @see plugin_api
  *
  * @Annotation
