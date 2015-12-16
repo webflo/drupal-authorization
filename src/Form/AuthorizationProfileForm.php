@@ -108,6 +108,13 @@ class AuthorizationProfileForm extends EntityForm {
     );
 
     /* You will need additional form elements for your custom properties. */
+    $form['status'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enabled'),
+      '#default_value' => $authorization_profile->get('status'),
+      '#description' => $this->t("Enable this profile."),
+    );
+
     $provider_options = $this->getProviderOptions();
     if ($provider_options) {
       if (count($provider_options) == 1) {

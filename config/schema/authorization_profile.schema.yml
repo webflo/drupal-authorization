@@ -10,3 +10,12 @@ authorization.authorization_profile.*:
       label: 'Label'
     uuid:
       type: string
+    provider:
+      type: string
+      label: 'Provider'
+    consumer:
+      type: string
+      label: 'Consumer'
+    status:
+      type: boolean
+      label: 'Enabled'

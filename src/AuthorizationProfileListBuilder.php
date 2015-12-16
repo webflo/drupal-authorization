@@ -31,9 +31,9 @@ class AuthorizationProfileListBuilder extends ConfigEntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
     $row['label'] = $this->getLabel($entity);
-    $row['provider'] = $entity->id();
-    $row['consumer'] = $entity->id();
-    $row['enabled'] = $entity->id();
+    $row['provider'] = $entity->get('provider');
+    $row['consumer'] = $entity->get('consumer');
+    $row['enabled'] = $entity->get('status') ? 'Yes' : 'No';
     // You probably want a few more properties here...
     return $row + parent::buildRow($entity);
   }
