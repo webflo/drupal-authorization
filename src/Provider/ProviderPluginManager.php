@@ -7,7 +7,7 @@
 
 namespace Drupal\authorization\Provider;
 
-use Drupal\Core\Cache\CacheProviderInterface;
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 
@@ -32,9 +32,9 @@ class ProviderPluginManager extends DefaultPluginManager {
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
    */
-  public function __construct(\Traversable $namespaces, CacheProviderInterface $cache_provider, ModuleHandlerInterface $module_handler) {
+  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_provider, ModuleHandlerInterface $module_handler) {
     parent::__construct('Plugin/authorization/Provider', $namespaces, $module_handler, 'Drupal\authorization\Provider\ProviderInterface', 'Drupal\authorization\Annotation\AuthorizationProvider');
-    $this->setCacheProvider($cache_provider, 'authorization_providers');
+    $this->setCacheBackend($cache_provider, 'authorization_providers');
     $this->alterInfo('authorization_provider_info');
   }
 

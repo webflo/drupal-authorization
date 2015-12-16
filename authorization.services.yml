@@ -1,7 +1,7 @@
 services:
-  plugin.manager.authorization_provider.processor:
-    class: Drupal\authorization\Plugin\AuthorizationProviderManager
+  plugin.manager.authorization.provider:
+    class: Drupal\authorization\Provider\ProviderPluginManager
     parent: default_plugin_manager
-  plugin.manager.authorization_consumer.processor:
-    class: Drupal\authorization\Plugin\AuthorizationConsumerManager
+  plugin.manager.authorization.consumer:
+    class: Drupal\authorization\Consumer\ConsumerPluginManager
     parent: default_plugin_manager

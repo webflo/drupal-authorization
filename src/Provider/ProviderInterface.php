@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\authorization\Plugin\AuthorizationProviderInterface.
+ * Contains \Drupal\authorization\Provider/ProviderInterface.
  */
 
 namespace Drupal\authorization;
@@ -12,7 +12,7 @@ use Drupal\Component\Plugin\PluginInspectionInterface;
 /**
  * Defines an interface for Authorization provider plugins.
  */
-interface AuthorizationProviderInterface extends PluginInspectionInterface {
+interface ProviderInterface extends PluginInspectionInterface {
 
   // Add get/set methods for your plugin type here.
 

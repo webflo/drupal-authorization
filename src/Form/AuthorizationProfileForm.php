@@ -7,6 +7,7 @@
 
 namespace Drupal\authorization\Form;
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
@@ -30,7 +31,7 @@ class AuthorizationProfileForm extends EntityForm {
    *   The Consumer plugin manager.
    */
   public function __construct(EntityManagerInterface $entity_manager, ProviderPluginManager $provider_plugin_manager, ConsumerPluginManager $consumer_plugin_manager) {
-    $this->storage = $entity_manager->getStorage('authorization');
+    $this->storage = $entity_manager->getStorage('authorization_profile');
     $this->ProviderPluginManager = $provider_plugin_manager;
     $this->ConsumerPluginManager = $consumer_plugin_manager;
   }
@@ -43,10 +44,44 @@ class AuthorizationProfileForm extends EntityForm {
     /** @var \Drupal\Core\Entity\EntityManagerInterface $entity_manager */
     $entity_manager = $container->get('entity.manager');
     /** @var \Drupal\authorization\Backend\BackendPluginManager $backend_plugin_manager */
-    $provider_plugin_manager = $container->get('plugin.manager.authorization_provider.processor');
+    $provider_plugin_manager = $container->get('plugin.manager.authorization.provider');
     $consumer_plugin_manager = $container->get('plugin.manager.authorization.consumer');
     return new static($entity_manager, $provider_plugin_manager, $consumer_plugin_manager);
   }
+
+
+  /**
+   * Retrieves the provider plugin manager.
+   *
+   * @return \Drupal\authorization\Provider\ProviderPluginManager
+   *   The provider plugin manager.
+   */
+  protected function getProviderPluginManager() {
+    return $this->providerPluginManager ?: \Drupal::service('plugin.manager.authorization.provider');
+  }
+
+
+  /**
+   * Retrieves the consumer plugin manager.
+   *
+   * @return \Drupal\authorization\consumer\ConsumerPluginManager
+   *   The consumer plugin manager.
+   */
+  protected function getConsumerPluginManager() {
+    return $this->consumerPluginManager ?: \Drupal::service('plugin.manager.authorization.consumer');
+  }
+
+
+  /**
+   * Retrieves the backend plugin manager.
+   *
+   * @return \Drupal\search_api\Backend\BackendPluginManager
+   *   The backend plugin manager.
+   */
+  protected function getBackendPluginManager() {
+    return $this->backendPluginManager ?: \Drupal::service('plugin.manager.search_api.backend');
+  }
+
   /**
    * {@inheritdoc}
    */
@@ -76,14 +111,14 @@ class AuthorizationProfileForm extends EntityForm {
     $provider_options = $this->getProviderOptions();
     if ($provider_options) {
       if (count($provider_options) == 1) {
-        $profile->set('provider', key($provider_options));
+        $authorization_profile->set('provider', key($provider_options));
       }
       $form['provider'] = array(
         '#type' => 'radios',
-        '#title' => $this->t('provider'),
+        '#title' => $this->t('Provider'),
         '#description' => $this->t('Choose a Provider to use for this profile.'),
         '#options' => $provider_options,
-        '#default_value' => $profile->getProviderId(),
+        '#default_value' => $authorization_profile->getProviderId(),
         '#required' => TRUE,
         '#ajax' => array(
           'callback' => array(get_class($this), 'buildAjaxProviderConfigForm'),
@@ -97,14 +132,14 @@ class AuthorizationProfileForm extends EntityForm {
     $consumer_options = $this->getConsumerOptions();
     if ($consumer_options) {
       if (count($consumer_options) == 1) {
-        $profile->set('consumer', key($consumer_options));
+        $authorization_profile->set('consumer', key($consumer_options));
       }
       $form['consumer'] = array(
         '#type' => 'radios',
-        '#title' => $this->t('consumer'),
+        '#title' => $this->t('Consumer'),
         '#description' => $this->t('Choose a Consumer to use for this profile.'),
         '#options' => $consumer_options,
-        '#default_value' => $profile->getConsumerId(),
+        '#default_value' => $authorization_profile->getConsumerId(),
         '#required' => TRUE,
         '#ajax' => array(
           'callback' => array(get_class($this), 'buildAjaxconsumerConfigForm'),
