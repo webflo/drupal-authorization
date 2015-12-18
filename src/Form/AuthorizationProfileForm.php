@@ -10,8 +10,12 @@ namespace Drupal\authorization\Form;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityForm;
+use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+
+use Drupal\authorization\Provider\ProviderPluginManager;
+use Drupal\authorization\Consumer\ConsumerPluginManager;
 
 /**
  * Class AuthorizationProfileForm.
