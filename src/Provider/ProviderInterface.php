@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\authorization\Provider/ProviderInterface.
+ * Contains \Drupal\authorization\Provider\ProviderInterface.
  */
 
-namespace Drupal\authorization;
+namespace Drupal\authorization\Provider;
 
 use Drupal\authorization\Plugin\ConfigurablePluginInterface;
 

@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\authorization\Plugin\ConsumerInterface.
+ * Contains \Drupal\authorization\Consumer\ConsumerInterface.
  */
 
-namespace Drupal\authorization;
+namespace Drupal\authorization\Consumer;
 
 use Drupal\authorization\Plugin\ConfigurablePluginInterface;
 

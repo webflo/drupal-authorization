@@ -134,6 +134,25 @@ class AuthorizationProfileForm extends EntityForm {
       );
     }
 
+    if ($authorization_profile->hasValidProvider()) {
+      $provider = $authorization_profile->getProvider();
+      if (($provider_form = $provider->buildConfigurationForm(array(), $form_state))) {
+        // If the provider plugin changed, notify the user.
+        if (!empty($form_state->getValues()['provider'])) {
+          drupal_set_message($this->t('Please configure the selected provider.'), 'warning');
+        }
+
+        // Modify the provider plugin configuration container element.
+        $form['provider_config']['#type'] = 'details';
+        $form['provider_config']['#title'] = $this->t('Configure %plugin provider', array('%plugin' => $provider->label()));
+        $form['provider_config']['#description'] = $provider->getDescription();
+        $form['provider_config']['#open'] = TRUE;
+        // Attach the provider plugin configuration form.
+        $form['provider_config'] += $provider_form;
+      }
+    }
+
+
     $consumer_options = $this->getConsumerOptions();
     if ($consumer_options) {
       if (count($consumer_options) == 1) {
