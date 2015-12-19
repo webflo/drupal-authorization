@@ -7,12 +7,12 @@
 
 namespace Drupal\authorization;
 
-use Drupal\Component\Plugin\PluginInspectionInterface;
+use Drupal\authorization\Plugin\ConfigurablePluginInterface;
 
 /**
  * Defines an interface for Authorization consumer plugins.
  */
-interface ConsumerInterface extends PluginInspectionInterface {
+interface ConsumerInterface extends ConfigurablePluginInterface {
 
   // Add get/set methods for your plugin type here.
 
