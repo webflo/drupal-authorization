@@ -53,37 +53,24 @@ class AuthorizationProfileForm extends EntityForm {
     return new static($entity_manager, $provider_plugin_manager, $consumer_plugin_manager);
   }
 
-
   /**
-   * Retrieves the provider plugin manager.
+   * Retrieves the Provider plugin manager.
    *
    * @return \Drupal\authorization\Provider\ProviderPluginManager
-   *   The provider plugin manager.
+   *   The Provider plugin manager.
    */
   protected function getProviderPluginManager() {
     return $this->providerPluginManager ?: \Drupal::service('plugin.manager.authorization.provider');
   }
 
-
   /**
-   * Retrieves the consumer plugin manager.
+   * Retrieves the Consumer plugin manager.
    *
-   * @return \Drupal\authorization\consumer\ConsumerPluginManager
-   *   The consumer plugin manager.
+   * @return \Drupal\authorization\Consumer\ConsumerPluginManager
+   *   The Consumer plugin manager.
    */
   protected function getConsumerPluginManager() {
     return $this->consumerPluginManager ?: \Drupal::service('plugin.manager.authorization.consumer');
-  }
-
-
-  /**
-   * Retrieves the backend plugin manager.
-   *
-   * @return \Drupal\search_api\Backend\BackendPluginManager
-   *   The backend plugin manager.
-   */
-  protected function getBackendPluginManager() {
-    return $this->backendPluginManager ?: \Drupal::service('plugin.manager.search_api.backend');
   }
 
   /**
@@ -160,7 +147,7 @@ class AuthorizationProfileForm extends EntityForm {
         '#default_value' => $authorization_profile->getConsumerId(),
         '#required' => TRUE,
         '#ajax' => array(
-          'callback' => array(get_class($this), 'buildAjaxconsumerConfigForm'),
+          'callback' => array(get_class($this), 'buildAjaxConsumerConfigForm'),
           'wrapper' => 'authorization-profile-consumer-config-form',
           'method' => 'replace',
           'effect' => 'fade',
@@ -207,6 +194,29 @@ class AuthorizationProfileForm extends EntityForm {
       $options[$plugin_id] = Html::escape($plugin_definition['label']);
     }
     return $options;
+  }
+
+
+  /**
+   * Handles switching the selected provider plugin.
+   */
+  public static function buildAjaxProviderConfigForm(array $form, FormStateInterface $form_state) {
+    // The work is already done in form(), where we rebuild the entity according
+    // to the current form values and then create the provider configuration form
+    // based on that. So we just need to return the relevant part of the form
+    // here.
+    return $form['provider_config'];
+  }
+
+  /**
+   * Handles switching the selected consumer plugin.
+   */
+  public static function buildAjaxConsumerConfigForm(array $form, FormStateInterface $form_state) {
+    // The work is already done in form(), where we rebuild the entity according
+    // to the current form values and then create the consumer configuration form
+    // based on that. So we just need to return the relevant part of the form
+    // here.
+    return $form['consumer_config'];
   }
 
   /**
