@@ -12,10 +12,16 @@ authorization.authorization_profile.*:
       type: string
     provider:
       type: string
-      label: 'Provider'
+      label: 'Provider Plugin ID'
+    provider_config:
+      type: authorization.provider.plugin.[%parent.provider]
+      label: 'Provider configuration'
     consumer:
       type: string
-      label: 'Consumer'
+      label: 'Consumer Plugin ID'
+    consumer_config:
+      type: authorization.consumer.plugin.[%parent.consumer]
+      label: 'Consumer configuration'
     status:
       type: boolean
       label: 'Enabled'

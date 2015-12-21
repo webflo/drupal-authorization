@@ -14,6 +14,7 @@ use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use Drupal\authorization\AuthorizationProfileInterface;
 use Drupal\authorization\Provider\ProviderPluginManager;
 use Drupal\authorization\Consumer\ConsumerPluginManager;
 
@@ -80,6 +81,26 @@ class AuthorizationProfileForm extends EntityForm {
     $form = parent::form($form, $form_state);
 
     $authorization_profile = $this->entity;
+
+    $this->buildEntityForm($form, $form_state, $authorization_profile);
+    // Skip adding the plugin config forms if we cleared the server form due to
+    // an error.
+    if ($form) {
+      $this->buildProviderConfigForm($form, $form_state, $authorization_profile);
+      $this->buildConsumerConfigForm($form, $form_state, $authorization_profile);
+    }
+
+    return $form;
+  }
+
+
+  /**
+   * Builds the form for the basic server properties.
+   *
+   * @param \Drupal\authorization\AuthorizationProfileInterface $authorization_profile
+   *   The profile that is being created or edited.
+   */
+  public function buildEntityForm(array &$form, FormStateInterface $form_state, AuthorizationProfileInterface $authorization_profile) {
     $form['label'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
@@ -113,76 +134,26 @@ class AuthorizationProfileForm extends EntityForm {
       }
       $form['provider'] = array(
         '#type' => 'radios',
-        '#title' => $this->t('Provider'),
-        '#description' => $this->t('Choose a Provider to use for this profile.'),
+        '#title' => $this->t('provider'),
+        '#description' => $this->t('Choose a provider to use for this profile.'),
         '#options' => $provider_options,
         '#default_value' => $authorization_profile->getProviderId(),
         '#required' => TRUE,
         '#ajax' => array(
           'callback' => array(get_class($this), 'buildAjaxProviderConfigForm'),
-          'wrapper' => 'authorization-profile-provider-config-form',
+          'wrapper' => 'authorization-provider-config-form',
           'method' => 'replace',
           'effect' => 'fade',
         ),
       );
-    } else {
-      $form['provider'] = array(
-        '#type' => 'markup',
-        '#markup' => $this->t('<strong>Warning</strong>: You need to download and enable an Authorization Provider plugin.
-          For example: <em>ldap_authorization</em>.
-          '),
-      );
     }
-
-    if ($authorization_profile->hasValidProvider()) {
-      $provider = $authorization_profile->getProvider();
-      if (($provider_form = $provider->buildConfigurationForm(array(), $form_state))) {
-        // If the provider plugin changed, notify the user.
-        if (!empty($form_state->getValues()['provider'])) {
-          drupal_set_message($this->t('Please configure the selected provider.'), 'warning');
-        }
-
-        // Modify the provider plugin configuration container element.
-        $form['provider_config']['#type'] = 'details';
-        $form['provider_config']['#title'] = $this->t('Configure %plugin provider', array('%plugin' => $provider->label()));
-        $form['provider_config']['#description'] = $provider->getDescription();
-        $form['provider_config']['#open'] = TRUE;
-        // Attach the provider plugin configuration form.
-        $form['provider_config'] += $provider_form;
-      }
+    else {
+      drupal_set_message($this->t('There are no provider plugins available for the Authorization.'), 'error');
+      $form = array();
     }
 
 
-    $consumer_options = $this->getConsumerOptions();
-    if ($consumer_options) {
-      if (count($consumer_options) == 1) {
-        $authorization_profile->set('consumer', key($consumer_options));
-      }
-      $form['consumer'] = array(
-        '#type' => 'radios',
-        '#title' => $this->t('Consumer'),
-        '#description' => $this->t('Choose a Consumer to use for this profile.'),
-        '#options' => $consumer_options,
-        '#default_value' => $authorization_profile->getConsumerId(),
-        '#required' => TRUE,
-        '#ajax' => array(
-          'callback' => array(get_class($this), 'buildAjaxConsumerConfigForm'),
-          'wrapper' => 'authorization-profile-consumer-config-form',
-          'method' => 'replace',
-          'effect' => 'fade',
-        ),
-      );
-    } else {
-      $form['consumer'] = array(
-        '#type' => 'markup',
-        '#markup' => $this->t('<strong>Warning</strong>: You need to download and enable an Authorization Consumer plugin.
-          For example: <em>authorization_drupal_roles</em> or <em>og_authorization</em>.
-          '),
-      );
-    }
-    return $form;
   }
-
 
   /**
    * Returns all available Provider plugins, as an options list.
@@ -199,6 +170,84 @@ class AuthorizationProfileForm extends EntityForm {
     return $options;
   }
 
+
+  /**
+   * Builds the provider-specific configuration form.
+   *
+   * @param \Drupal\authorization\AuthorizationProfileInterface $authorization_profile
+   *   The profile that is being created or edited.
+   */
+  public function buildProviderConfigForm(array &$form, FormStateInterface $form_state, AuthorizationProfileInterface $authorization_profile) {
+    $form['provider_config'] = array(
+      '#type' => 'container',
+      '#attributes' => array(
+        'id' => 'authorization-provider-config-form',
+      ),
+      '#tree' => TRUE,
+    );
+
+    if ($authorization_profile->hasValidProvider()) {
+      $provider = $authorization_profile->getProvider();
+      if (($provider_form = $provider->buildConfigurationForm(array(), $form_state))) {
+        // If the provider plugin changed, notify the user.
+        if (!empty($form_state->getValues()['provider'])) {
+          drupal_set_message($this->t('Please configure the used provider_form.'), 'warning');
+        }
+
+        // Modify the provider plugin configuration container element.
+        $form['provider_config']['#type'] = 'details';
+        $form['provider_config']['#title'] = $this->t('Configure %plugin provider', array('%plugin' => $provider->label()));
+        $form['provider_config']['#description'] = $provider->getDescription();
+        $form['provider_config']['#open'] = TRUE;
+        // Attach the provider plugin configuration form.
+        $form['provider_config'] += $provider_form;
+      }
+    }
+    // Only notify the user of a missing provider plugin if we're editing an
+    // existing server.
+    elseif (!$authorization_profile->isNew()) {
+      drupal_set_message($this->t('The provider plugin is missing or invalid.'), 'error');
+    }
+  }
+
+  /**
+   * Builds the consumer-specific configuration form.
+   *
+   * @param \Drupal\authorization\AuthorizationProfileInterface $authorization_profile
+   *   The profile that is being created or edited.
+   */
+  public function buildConsumerConfigForm(array &$form, FormStateInterface $form_state, AuthorizationProfileInterface $authorization_profile) {
+    $form['consumer_config'] = array(
+      '#type' => 'container',
+      '#attributes' => array(
+        'id' => 'authorization-consumer-config-form',
+      ),
+      '#tree' => TRUE,
+    );
+
+    if ($authorization_profile->hasValidConsumer()) {
+      $consumer = $authorization_profile->getConsumer();
+      if (($consumer_form = $consumer->buildConfigurationForm(array(), $form_state))) {
+        // If the consumer plugin changed, notify the user.
+        if (!empty($form_state->getValues()['consumer'])) {
+          drupal_set_message($this->t('Please configure the used consumer_form.'), 'warning');
+        }
+
+        // Modify the consumer plugin configuration container element.
+        $form['consumer_config']['#type'] = 'details';
+        $form['consumer_config']['#title'] = $this->t('Configure %plugin consumer', array('%plugin' => $consumer->label()));
+        $form['consumer_config']['#description'] = $consumer->getDescription();
+        $form['consumer_config']['#open'] = TRUE;
+        // Attach the consumer plugin configuration form.
+        $form['consumer_config'] += $consumer_form;
+      }
+    }
+    // Only notify the user of a missing consumer plugin if we're editing an
+    // existing server.
+    elseif (!$authorization_profile->isNew()) {
+      drupal_set_message($this->t('The consumer plugin is missing or invalid.'), 'error');
+    }
+  }
 
   /**
    * Returns all available Consumer plugins, as an options list.
@@ -236,6 +285,61 @@ class AuthorizationProfileForm extends EntityForm {
     // based on that. So we just need to return the relevant part of the form
     // here.
     return $form['consumer_config'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
+    $authorization_profile = $this->getEntity();
+
+    $provider_id = $authorization_profile->getProviderId();
+    // Only when the profile is new. Afterward we can't change provider.
+    if ($provider_id !== $form_state->getValues()['provider']) {
+      $input = $form_state->getUserInput();
+      $input['provider_config'] = array();
+      $form_state->set('input', $input);
+    }
+    elseif ($form['provider_config']['#type'] == 'details' && $authorization_profile->hasValidProvider()) {
+      $provider_form_state = new SubFormState($form_state, array('provider_config'));
+      $authorization_profile->getProvider()->validateConfigurationForm($form['provider_config'], $provider_form_state);
+    }
+
+    $consumer_id = $authorization_profile->getConsumerId();
+    // Only when the profile is new. Afterward we can't change consumer.
+    if ($consumer_id !== $form_state->getValues()['consumer']) {
+      $input = $form_state->getUserInput();
+      $input['consumer_config'] = array();
+      $form_state->set('input', $input);
+    }
+    elseif ($form['consumer_config']['#type'] == 'details' && $authorization_profile->hasValidConsumer()) {
+      $consumer_form_state = new SubFormState($form_state, array('consumer_config'));
+      $authorization_profile->getConsumer()->validateConfigurationForm($form['consumer_config'], $consumer_form_state);
+    }
+
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    parent::submitForm($form, $form_state);
+
+    /** @var \Drupal\search_api\ServerInterface $server */
+    $authorization_profile = $this->getEntity();
+    // Check before loading the provider plugin so we don't throw an exception.
+    if ($form['provider_config']['#type'] == 'details' && $authorization_profile->hasValidProvider()) {
+      $provider_form_state = new SubFormState($form_state, array('provider_config'));
+      $authorization_profile->getProvider()->submitConfigurationForm($form['provider_config'], $provider_form_state);
+    }
+    // Check before loading the consumer plugin so we don't throw an exception.
+    if ($form['consumer_config']['#type'] == 'details' && $authorization_profile->hasValidConsumer()) {
+      $consumer_form_state = new SubFormState($form_state, array('consumer_config'));
+      $authorization_profile->getConsumer()->submitConfigurationForm($form['consumer_config'], $consumer_form_state);
+    }
+
+    return $authorization_profile;
   }
 
   /**
