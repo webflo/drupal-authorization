@@ -134,8 +134,8 @@ class AuthorizationProfileForm extends EntityForm {
       }
       $form['provider'] = array(
         '#type' => 'radios',
-        '#title' => $this->t('provider'),
-        '#description' => $this->t('Choose a provider to use for this profile.'),
+        '#title' => $this->t('Provider'),
+        '#description' => $this->t('Choose an authorization provider to use for this profile.'),
         '#options' => $provider_options,
         '#default_value' => $authorization_profile->getProviderId(),
         '#required' => TRUE,
@@ -149,6 +149,31 @@ class AuthorizationProfileForm extends EntityForm {
     }
     else {
       drupal_set_message($this->t('There are no provider plugins available for the Authorization.'), 'error');
+      $form = array();
+    }
+
+    $consumer_options = $this->getConsumerOptions();
+    if ($consumer_options) {
+      if (count($consumer_options) == 1) {
+        $authorization_profile->set('consumer', key($consumer_options));
+      }
+      $form['consumer'] = array(
+        '#type' => 'radios',
+        '#title' => $this->t('Consumer'),
+        '#description' => $this->t('Choose a consumer to use with this profile.'),
+        '#options' => $consumer_options,
+        '#default_value' => $authorization_profile->getConsumerId(),
+        '#required' => TRUE,
+        '#ajax' => array(
+          'callback' => array(get_class($this), 'buildAjaxConsumerConfigForm'),
+          'wrapper' => 'authorization-consumer-config-form',
+          'method' => 'replace',
+          'effect' => 'fade',
+        ),
+      );
+    }
+    else {
+      drupal_set_message($this->t('There are no consumer plugins available for the Authorization.'), 'error');
       $form = array();
     }
 

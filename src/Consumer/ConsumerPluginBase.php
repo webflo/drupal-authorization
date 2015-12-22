@@ -8,6 +8,7 @@
 namespace Drupal\authorization\Consumer;
 
 use Drupal\authorization\Plugin\ConfigurablePluginBase;
+use Drupal\authorization\Consumer\ConsumerInterface;
 
 /**
  * Base class for Authorization consumer plugins.

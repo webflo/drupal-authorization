@@ -12,7 +12,7 @@ use Drupal\Component\Annotation\Plugin;
 /**
  * Defines a Authorization consumer item annotation object.
  *
- * @see \Drupal\authorization\Plugin\AuthorizationConsumerManager
+ * @see \Drupal\authorization\Consumer\ConsumerPluginManager
  * @see plugin_api
  *
  * @Annotation
