@@ -14,7 +14,7 @@ use Drupal\authorization\Consumer\ConsumerPluginBase;
  * @AuthorizationConsumer(
  *   id = "authorization_drupal_roles",
  *   label = @Translation("Drupal Roles"),
- *   description = @Translation("LDAP provider to the Authorization API.")
+ *   description = @Translation("Add users to roles.")
  * )
  */
 class DrupalRolesConsumer extends ConsumerPluginBase {

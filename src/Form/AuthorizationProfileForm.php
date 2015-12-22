@@ -132,6 +132,12 @@ class AuthorizationProfileForm extends EntityForm {
       if (count($provider_options) == 1) {
         $authorization_profile->set('provider', key($provider_options));
       }
+      // Once we've chosen one we can't change our minds
+      if ( $authorization_profile->getProviderId() ) {
+        $disabled = TRUE;
+      } else {
+        $disabled = FALSE;
+      }
       $form['provider'] = array(
         '#type' => 'radios',
         '#title' => $this->t('Provider'),
@@ -139,6 +145,7 @@ class AuthorizationProfileForm extends EntityForm {
         '#options' => $provider_options,
         '#default_value' => $authorization_profile->getProviderId(),
         '#required' => TRUE,
+        '#disabled' => $disabled,
         '#ajax' => array(
           'callback' => array(get_class($this), 'buildAjaxProviderConfigForm'),
           'wrapper' => 'authorization-provider-config-form',
@@ -157,6 +164,11 @@ class AuthorizationProfileForm extends EntityForm {
       if (count($consumer_options) == 1) {
         $authorization_profile->set('consumer', key($consumer_options));
       }
+      if ( $authorization_profile->getConsumerId() ) {
+        $disabled = TRUE;
+      } else {
+        $disabled = FALSE;
+      }
       $form['consumer'] = array(
         '#type' => 'radios',
         '#title' => $this->t('Consumer'),
@@ -164,6 +176,7 @@ class AuthorizationProfileForm extends EntityForm {
         '#options' => $consumer_options,
         '#default_value' => $authorization_profile->getConsumerId(),
         '#required' => TRUE,
+        '#disabled' => $disabled,
         '#ajax' => array(
           'callback' => array(get_class($this), 'buildAjaxConsumerConfigForm'),
           'wrapper' => 'authorization-consumer-config-form',
