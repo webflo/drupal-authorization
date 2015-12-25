@@ -20,6 +20,10 @@ use Drupal\authorization\Consumer\ConsumerPluginBase;
 class DrupalRolesConsumer extends ConsumerPluginBase {
 
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $form['description'] = array(
+      '#type' => 'markup',
+      '#markup' => t('There are no settings for Drupal roles.'),
+    );
     return $form;
   }
 

@@ -190,7 +190,33 @@ class AuthorizationProfileForm extends EntityForm {
       $form = array();
     }
 
+    if ( $consumer_options && $provider_options ) {
+      // @TODO move mapping into a table with repeating rows?
+      $consumer = $authorization_profile->getConsumer();
+      $provider = $authorization_profile->getProvider();
 
+      $form['mappings'] = array(
+        '#type' => 'table',
+        '#responsive' => TRUE,
+        '#weight' => 100,
+        '#title' => t('Mapping from LDAP Authorization to Drupal roles'),
+        '#header' => array($provider->label(), $consumer->label()),
+      );
+
+      for ($i=1; $i<=4; $i++) {
+        $form['mappings'][$i]['provider'] = array(
+          '#type' => 'textfield',
+          '#title' => t('LDAP Authorization'),
+          '#title_display' => 'invisible',
+        );
+
+        $form['mappings'][$i]['consumer'] = array(
+          '#type' => 'tel',
+          '#title' => t('Drupal roles'),
+          '#title_display' => 'invisible',
+        );
+      }
+    }
   }
 
   /**
