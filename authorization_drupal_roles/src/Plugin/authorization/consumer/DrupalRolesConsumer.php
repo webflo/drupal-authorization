@@ -20,6 +20,10 @@ use Drupal\authorization\Consumer\ConsumerPluginBase;
 class DrupalRolesConsumer extends ConsumerPluginBase {
 
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    return $form;
+  }
+
+  public function buildRowForm(array $form, FormStateInterface $form_state) {
     $role_options = array();
     $roles = user_roles(TRUE);
     foreach ( $roles as $key => $role ) {
