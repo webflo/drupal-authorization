@@ -99,6 +99,25 @@ abstract class ConfigurablePluginBase extends PluginBase implements Configurable
   /**
    * {@inheritdoc}
    */
+  public function buildRowForm(array $form, FormStateInterface $form_state) {
+    return array();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateRowForm(array &$form, FormStateInterface $form_state) { }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitRowForm(array &$form, FormStateInterface $form_state) {
+    $this->setConfiguration($form_state->getValues());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function calculateDependencies() {
     $this->addDependency('module', $this->getPluginDefinition()['provider']);
     return $this->dependencies;
