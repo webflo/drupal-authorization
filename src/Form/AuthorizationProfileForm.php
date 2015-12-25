@@ -194,6 +194,7 @@ class AuthorizationProfileForm extends EntityForm {
       // @TODO move mapping into a table with repeating rows?
       $consumer = $authorization_profile->getConsumer();
       $provider = $authorization_profile->getProvider();
+      // $consumer_row_form = $consumer->buildRowForm($form, $form_state);
 
       $form['mappings'] = array(
         '#type' => 'table',
@@ -201,21 +202,32 @@ class AuthorizationProfileForm extends EntityForm {
         '#weight' => 100,
         '#title' => t('Mapping from LDAP Authorization to Drupal roles'),
         '#header' => array($provider->label(), $consumer->label()),
+        '#footer' => 'foo',
       );
 
       for ($i=1; $i<=4; $i++) {
-        $form['mappings'][$i]['provider'] = array(
-          '#type' => 'textfield',
-          '#title' => t('LDAP Authorization'),
-          '#title_display' => 'invisible',
-        );
+        $provider_row_form = $provider->buildRowForm($form, $form_state, $i);
+        $form['mappings'][$i]['provider'] = $provider_row_form;
+        // $form['mappings'][$i]['provider'] = array(
+        //   '#type' => 'textfield',
+        //   '#title' => t('LDAP Authorization'),
+        //   '#title_display' => 'invisible',
+        // );
 
-        $form['mappings'][$i]['consumer'] = array(
-          '#type' => 'tel',
-          '#title' => t('Drupal roles'),
-          '#title_display' => 'invisible',
-        );
+        $consumer_row_form = $consumer->buildRowForm($form, $form_state, $i);
+        $form['mappings'][$i]['consumer'] = $consumer_row_form;
       }
+
+      $form['mappings_provider_help'] = array(
+        '#type' => 'markup',
+        '#markup' => $provider->buildRowDescription($form, $form_state),
+        '#weight' => 101,
+      );
+      $form['mappings_consumer_help'] = array(
+        '#type' => 'markup',
+        '#markup' => $consumer->buildRowDescription($form, $form_state),
+        '#weight' => 102,
+      );
     }
   }
 

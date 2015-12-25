@@ -99,8 +99,15 @@ abstract class ConfigurablePluginBase extends PluginBase implements Configurable
   /**
    * {@inheritdoc}
    */
-  public function buildRowForm(array $form, FormStateInterface $form_state) {
+  public function buildRowForm(array $form, FormStateInterface $form_state, $i) {
     return array();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildRowDescription(array $form, FormStateInterface $form_state) {
+    return "";
   }
 
   /**
