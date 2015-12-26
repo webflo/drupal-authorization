@@ -190,7 +190,7 @@ class AuthorizationProfileForm extends EntityForm {
       $form = array();
     }
 
-    if ( $consumer_options && $provider_options ) {
+    if ( $authorization_profile->hasValidProvider() && $authorization_profile->hasValidConsumer() && $consumer_options && $provider_options ) {
       // @TODO move mapping into a table with repeating rows?
       $consumer = $authorization_profile->getConsumer();
       $provider = $authorization_profile->getProvider();
@@ -207,7 +207,7 @@ class AuthorizationProfileForm extends EntityForm {
 
       for ($i=1; $i<=4; $i++) {
         $provider_row_form = $provider->buildRowForm($form, $form_state, $i);
-        $form['mappings'][$i]['provider'] = $provider_row_form;
+        $form['mappings'][$i]['provider_mappings'] = $provider_row_form;
         // $form['mappings'][$i]['provider'] = array(
         //   '#type' => 'textfield',
         //   '#title' => t('LDAP Authorization'),
@@ -215,7 +215,7 @@ class AuthorizationProfileForm extends EntityForm {
         // );
 
         $consumer_row_form = $consumer->buildRowForm($form, $form_state, $i);
-        $form['mappings'][$i]['consumer'] = $consumer_row_form;
+        $form['mappings'][$i]['consumer_mappings'] = $consumer_row_form;
       }
 
       $form['mappings_provider_help'] = array(
@@ -413,6 +413,12 @@ class AuthorizationProfileForm extends EntityForm {
     if ($form['consumer_config']['#type'] == 'details' && $authorization_profile->hasValidConsumer()) {
       $consumer_form_state = new SubFormState($form_state, array('consumer_config'));
       $authorization_profile->getConsumer()->submitConfigurationForm($form['consumer_config'], $consumer_form_state);
+    }
+    // @TODO Submit Row forms
+    if ( $form['mappings'] ) {
+      $mappings_form_state = new SubFormState($form_state, array('mappings'));
+      $authorization_profile->getConsumer()->submitRowForm($form['mappings'], $mappings_form_state);
+      $authorization_profile->getProvider()->submitRowForm($form['mappings'], $mappings_form_state);
     }
 
     return $authorization_profile;
