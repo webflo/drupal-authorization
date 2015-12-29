@@ -76,6 +76,13 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
   protected $provider_config = array();
 
   /**
+   * The provider plugin mappings.
+   *
+   * @var array
+   */
+  protected $provider_mappings = array();
+
+  /**
    * The provider plugin instance.
    *
    * @var \Drupal\authorization\provider\ProviderInterface
@@ -88,6 +95,13 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
    * @var array
    */
   protected $consumer_config = array();
+
+  /**
+   * The consumer plugin mappings.
+   *
+   * @var array
+   */
+  protected $consumer_mappings = array();
 
   /**
    * The consumer plugin instance.
@@ -129,19 +143,15 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
    * {@inheritdoc}
    */
   public function getProvider() {
-    error_log("Get Provider");
     if (!$this->providerPlugin) {
-      error_log("No Provider");
       $provider_plugin_manager = \Drupal::service('plugin.manager.authorization.provider');
       $config = $this->provider_config;
       $config['profile'] = $this;
       if (!($this->providerPlugin = $provider_plugin_manager->createInstance($this->getProviderId(), $config))) {
         $args['@provider'] = $this->getProviderId();
         $args['%profile'] = $this->label();
-        throw new SearchApiException(new FormattableMarkup('The provider with ID "@provider" could not be retrieved for profile %profile.', $args));
+        // throw new SearchApiException(new FormattableMarkup('The provider with ID "@provider" could not be retrieved for profile %profile.', $args));
       }
-    } else {
-      error_log(print_r($this->provider, TRUE));
     }
 
     return $this->providerPlugin;
@@ -163,6 +173,22 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
     return $this;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getProviderMappings() {
+    return $this->provider_mappings;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setProviderMappings(array $provider_mappings) {
+    $this->provider_mappings = $provider_mappings;
+    $this->getProvider()->setConfiguration($provider_mappings);
+    return $this;
+  }
+
 
   /**
    * {@inheritdoc}
@@ -179,11 +205,11 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
     if (!$this->consumerPlugin) {
       $consumer_plugin_manager = \Drupal::service('plugin.manager.authorization.consumer');
       $config = $this->consumer_config;
-      $config['server'] = $this;
+      $config['profile'] = $this;
       if (!($this->consumerPlugin = $consumer_plugin_manager->createInstance($this->getConsumerId(), $config))) {
         $args['@consumer'] = $this->getConsumerId();
         $args['%server'] = $this->label();
-        throw new SearchApiException(new FormattableMarkup('The consumer with ID "@consumer" could not be retrieved for server %server.', $args));
+        // throw new SearchApiException(new FormattableMarkup('The consumer with ID "@consumer" could not be retrieved for server %server.', $args));
       }
     }
     return $this->consumerPlugin;
@@ -204,5 +230,22 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
     $this->getConsumer()->setConfiguration($consumer_config);
     return $this;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getConsumerMappings() {
+    return $this->consumer_mappings;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setConsumerMappings(array $consumer_mappings) {
+    $this->consumer_mappings = $consumer_mappings;
+    $this->getConsumer()->setConfiguration($consumer_mappings);
+    return $this;
+  }
+
 
 }

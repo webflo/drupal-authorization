@@ -192,8 +192,8 @@ class AuthorizationProfileForm extends EntityForm {
 
     if ( $authorization_profile->hasValidProvider() && $authorization_profile->hasValidConsumer() && $consumer_options && $provider_options ) {
       // @TODO move mapping into a table with repeating rows?
-      $consumer = $authorization_profile->getConsumer();
       $provider = $authorization_profile->getProvider();
+      $consumer = $authorization_profile->getConsumer();
       // $consumer_row_form = $consumer->buildRowForm($form, $form_state);
 
       $form['mappings'] = array(
@@ -205,15 +205,9 @@ class AuthorizationProfileForm extends EntityForm {
         '#footer' => 'foo',
       );
 
-      for ($i=1; $i<=4; $i++) {
+      for ( $i = 0; $i <= 4; $i++ ) {
         $provider_row_form = $provider->buildRowForm($form, $form_state, $i);
         $form['mappings'][$i]['provider_mappings'] = $provider_row_form;
-        // $form['mappings'][$i]['provider'] = array(
-        //   '#type' => 'textfield',
-        //   '#title' => t('LDAP Authorization'),
-        //   '#title_display' => 'invisible',
-        // );
-
         $consumer_row_form = $consumer->buildRowForm($form, $form_state, $i);
         $form['mappings'][$i]['consumer_mappings'] = $consumer_row_form;
       }
@@ -419,6 +413,25 @@ class AuthorizationProfileForm extends EntityForm {
       $mappings_form_state = new SubFormState($form_state, array('mappings'));
       $authorization_profile->getConsumer()->submitRowForm($form['mappings'], $mappings_form_state);
       $authorization_profile->getProvider()->submitRowForm($form['mappings'], $mappings_form_state);
+
+      // Move provider_mappings to the top level
+      // @TODO fix this. Why do we have to do it? Why doesn't it work?
+      $values = $form_state->getValues();
+      
+      $values['provider_mappings'] = $values['mappings']['provider_mappings'];
+      unset($values['mappings']['provider_mappings']);
+      $values['consumer_mappings'] = $values['mappings']['consumer_mappings'];
+      unset($values['mappings']['consumer_mappings']);
+      $form_state->setValues($values);
+
+      // @TODO shouldn't have to do this. Though the above doesn't work either.
+      // @TODO should validate beforehand to make sure that we have mappings.
+      if ( $values['provider_mappings'] ) {
+        $authorization_profile->setProviderMappings($values['provider_mappings']);
+      }
+      if ( $values['consumer_mappings'] ) {
+        $authorization_profile->setConsumerMappings($values['consumer_mappings']);
+      }
     }
 
     return $authorization_profile;

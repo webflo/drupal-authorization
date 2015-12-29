@@ -16,12 +16,24 @@ authorization.authorization_profile.*:
     provider_config:
       type: authorization.provider.plugin.[%parent.provider]
       label: 'Provider configuration'
+    provider_mappings:
+      type: sequence
+      label: 'Provider mappings'
+      sequence:
+        type: authorization.provider_mappings.plugin.[%parent.provider]
+        label: Provider map
     consumer:
       type: string
       label: 'Consumer Plugin ID'
     consumer_config:
       type: authorization.consumer.plugin.[%parent.consumer]
       label: 'Consumer configuration'
+    consumer_mappings:
+      type: sequence
+      label: 'Provider mappings'
+      sequence:
+        type: authorization.consumer_mappings.plugin.[%parent.consumer]
+        label: 'Consumer mappings'
     status:
       type: boolean
       label: 'Enabled'

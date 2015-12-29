@@ -29,6 +29,7 @@ class DrupalRolesConsumer extends ConsumerPluginBase {
 
   public function buildRowForm(array $form, FormStateInterface $form_state, $index) {
     $row = array();
+    $mappings = $this->configuration['profile']->getConsumerMappings();
     $role_options = array();
     $roles = user_roles(TRUE);
     foreach ( $roles as $key => $role ) {
@@ -40,10 +41,24 @@ class DrupalRolesConsumer extends ConsumerPluginBase {
       '#type' => 'select',
       '#title' => t('Role'),
       '#options' => $role_options,
-      '#default_value' => $this->configuration['role'],
+      '#default_value' => $mappings[$index]['role'],
       '#description' => 'Choose the Drupal role to apply to the user.',
     );
     return $row;
+  }
+
+  public function submitRowForm(array &$form, FormStateInterface $form_state) {
+    $values = $form_state->getValues();
+    // Create an array of just the provider values
+    $consumer_mappings = array();
+    foreach ($values as $key => $value) {
+      $consumer_mappings[] = $value['consumer_mappings'];
+    }
+    // Nuke our form_state leaving just the mapping
+    // $form_state->setValues(array('consumer_mappings' => $consumer_mappings));
+    $form_state->setValue('consumer_mappings', $consumer_mappings);
+
+    parent::submitRowForm($form, $form_state);
   }
 
   /**
