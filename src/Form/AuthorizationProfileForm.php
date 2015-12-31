@@ -341,9 +341,9 @@ class AuthorizationProfileForm extends EntityForm {
   }
 
   public function buildMappingForm(array &$form, FormStateInterface $form_state, AuthorizationProfileInterface $authorization_profile) {
-    if ( 
+    if (
       ( $authorization_profile->hasValidProvider() || $form_state->getValue('provider') )
-      && 
+      &&
       ($authorization_profile->hasValidConsumer()  || $form_state->getValue('consumer') )
     ) {
       $provider = $authorization_profile->getProvider();
