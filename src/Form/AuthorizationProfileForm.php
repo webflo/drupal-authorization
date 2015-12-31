@@ -88,6 +88,9 @@ class AuthorizationProfileForm extends EntityForm {
     if ($form) {
       $this->buildProviderConfigForm($form, $form_state, $authorization_profile);
       $this->buildConsumerConfigForm($form, $form_state, $authorization_profile);
+      $this->buildMappingForm($form, $form_state, $authorization_profile);
+      $form['#prefix'] = "<div id='authorization-profile-form'>";
+      $form['#suffix'] = "</div>";
     }
 
     return $form;
@@ -148,7 +151,7 @@ class AuthorizationProfileForm extends EntityForm {
         '#disabled' => $disabled,
         '#ajax' => array(
           'callback' => array(get_class($this), 'buildAjaxProviderConfigForm'),
-          'wrapper' => 'authorization-provider-config-form',
+          'wrapper' => 'authorization-profile-form',
           'method' => 'replace',
           'effect' => 'fade',
         ),
@@ -164,7 +167,7 @@ class AuthorizationProfileForm extends EntityForm {
       if (count($consumer_options) == 1) {
         $authorization_profile->set('consumer', key($consumer_options));
       }
-      if ( $authorization_profile->getConsumerId() ) {
+      if ( $authorization_profile->getConsumerId() && !$authorization_profile->isNew()) {
         $disabled = TRUE;
       } else {
         $disabled = FALSE;
@@ -179,7 +182,7 @@ class AuthorizationProfileForm extends EntityForm {
         '#disabled' => $disabled,
         '#ajax' => array(
           'callback' => array(get_class($this), 'buildAjaxConsumerConfigForm'),
-          'wrapper' => 'authorization-consumer-config-form',
+          'wrapper' => 'authorization-profile-form',
           'method' => 'replace',
           'effect' => 'fade',
         ),
@@ -188,40 +191,6 @@ class AuthorizationProfileForm extends EntityForm {
     else {
       drupal_set_message($this->t('There are no consumer plugins available for the Authorization.'), 'error');
       $form = array();
-    }
-
-    if ( $authorization_profile->hasValidProvider() && $authorization_profile->hasValidConsumer() && $consumer_options && $provider_options ) {
-      // @TODO move mapping into a table with repeating rows?
-      $provider = $authorization_profile->getProvider();
-      $consumer = $authorization_profile->getConsumer();
-      // $consumer_row_form = $consumer->buildRowForm($form, $form_state);
-
-      $form['mappings'] = array(
-        '#type' => 'table',
-        '#responsive' => TRUE,
-        '#weight' => 100,
-        '#title' => t('Mapping from LDAP Authorization to Drupal roles'),
-        '#header' => array($provider->label(), $consumer->label()),
-        '#footer' => 'foo',
-      );
-
-      for ( $i = 0; $i <= 4; $i++ ) {
-        $provider_row_form = $provider->buildRowForm($form, $form_state, $i);
-        $form['mappings'][$i]['provider_mappings'] = $provider_row_form;
-        $consumer_row_form = $consumer->buildRowForm($form, $form_state, $i);
-        $form['mappings'][$i]['consumer_mappings'] = $consumer_row_form;
-      }
-
-      $form['mappings_provider_help'] = array(
-        '#type' => 'markup',
-        '#markup' => $provider->buildRowDescription($form, $form_state),
-        '#weight' => 101,
-      );
-      $form['mappings_consumer_help'] = array(
-        '#type' => 'markup',
-        '#markup' => $consumer->buildRowDescription($form, $form_state),
-        '#weight' => 102,
-      );
     }
   }
 
@@ -343,7 +312,7 @@ class AuthorizationProfileForm extends EntityForm {
     // to the current form values and then create the provider configuration form
     // based on that. So we just need to return the relevant part of the form
     // here.
-    return $form['provider_config'];
+    return $form;
   }
 
   /**
@@ -361,7 +330,7 @@ class AuthorizationProfileForm extends EntityForm {
     // to the current form values and then create the consumer configuration form
     // based on that. So we just need to return the relevant part of the form
     // here.
-    return $form['consumer_config'];
+    return $form;
   }
 
   /**
@@ -369,6 +338,44 @@ class AuthorizationProfileForm extends EntityForm {
    */
   public static function buildAjaxConsumerRowForm(array $form, FormStateInterface $form_state) {
     return $form['consumer_mappings'];
+  }
+
+  public function buildMappingForm(array &$form, FormStateInterface $form_state, AuthorizationProfileInterface $authorization_profile) {
+    if ( 
+      ( $authorization_profile->hasValidProvider() || $form_state->getValue('provider') )
+      && 
+      ($authorization_profile->hasValidConsumer()  || $form_state->getValue('consumer') )
+    ) {
+      $provider = $authorization_profile->getProvider();
+      $consumer = $authorization_profile->getConsumer();
+
+      $form['mappings'] = array(
+        '#type' => 'table',
+        '#responsive' => TRUE,
+        '#weight' => 100,
+        '#title' => t('Mapping from LDAP Authorization to Drupal roles'),
+        '#header' => array($provider->label(), $consumer->label()),
+        '#footer' => 'foo',
+      );
+
+      for ( $i = 0; $i <= 4; $i++ ) {
+        $provider_row_form = $provider->buildRowForm($form, $form_state, $i);
+        $form['mappings'][$i]['provider_mappings'] = $provider_row_form;
+        $consumer_row_form = $consumer->buildRowForm($form, $form_state, $i);
+        $form['mappings'][$i]['consumer_mappings'] = $consumer_row_form;
+      }
+
+      $form['mappings_provider_help'] = array(
+        '#type' => 'markup',
+        '#markup' => $provider->buildRowDescription($form, $form_state),
+        '#weight' => 101,
+      );
+      $form['mappings_consumer_help'] = array(
+        '#type' => 'markup',
+        '#markup' => $consumer->buildRowDescription($form, $form_state),
+        '#weight' => 102,
+      );
+    }
   }
 
   /**
