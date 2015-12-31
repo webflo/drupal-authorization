@@ -347,6 +347,13 @@ class AuthorizationProfileForm extends EntityForm {
   }
 
   /**
+   * Handles switching the selected provider plugin.
+   */
+  public static function buildAjaxProviderRowForm(array $form, FormStateInterface $form_state) {
+    return $form['provider_mappings'];
+  }
+
+  /**
    * Handles switching the selected consumer plugin.
    */
   public static function buildAjaxConsumerConfigForm(array $form, FormStateInterface $form_state) {
@@ -355,6 +362,13 @@ class AuthorizationProfileForm extends EntityForm {
     // based on that. So we just need to return the relevant part of the form
     // here.
     return $form['consumer_config'];
+  }
+
+  /**
+   * Handles switching the selected consumer plugin.
+   */
+  public static function buildAjaxConsumerRowForm(array $form, FormStateInterface $form_state) {
+    return $form['consumer_mappings'];
   }
 
   /**
