@@ -19,6 +19,8 @@ abstract class ConfigurablePluginBase extends PluginBase implements Configurable
 
   use DependencyTrait;
 
+  public $type = NULL;
+
   /**
    * {@inheritdoc}
    */
@@ -54,6 +56,25 @@ abstract class ConfigurablePluginBase extends PluginBase implements Configurable
   public function getDescription() {
     $plugin_definition = $this->getPluginDefinition();
     return isset($plugin_definition['description']) ? $plugin_definition['description'] : '';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getType() {
+    return $this->type;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTokens() {
+    $tokens = array();
+    $tokens['!' . $this->getType() . '_namePlural'] = $this->label() . 's';
+    $tokens['!' . $this->getType() . '_name'] = $this->label();
+    $tokens['!' . $this->getType() . '_mappingDirections'] = '';
+    $tokens['!examples'] = '';
+    return $tokens;
   }
 
   /**

@@ -16,6 +16,8 @@ use Drupal\authorization\Form\SubFormState;
  */
 abstract class ProviderPluginBase extends ConfigurablePluginBase implements ProviderInterface {
 
+  public $type = 'provider';
+
   public function submitRowForm(array &$form, SubFormState $form_state) {
     $values = $form_state->getValues();
     // Create an array of just the provider values

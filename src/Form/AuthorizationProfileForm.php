@@ -88,6 +88,7 @@ class AuthorizationProfileForm extends EntityForm {
     if ($form) {
       $this->buildProviderConfigForm($form, $form_state, $authorization_profile);
       $this->buildConsumerConfigForm($form, $form_state, $authorization_profile);
+      $this->buildConditionsForm($form, $form_state, $authorization_profile);
       $this->buildMappingForm($form, $form_state, $authorization_profile);
       $form['#prefix'] = "<div id='authorization-profile-form'>";
       $form['#suffix'] = "</div>";
@@ -338,6 +339,71 @@ class AuthorizationProfileForm extends EntityForm {
    */
   public static function buildAjaxConsumerRowForm(array $form, FormStateInterface $form_state) {
     return $form['consumer_mappings'];
+  }
+
+  public function buildConditionsForm(array &$form, FormStateInterface $form_state, AuthorizationProfileInterface $authorization_profile) {
+    if ( ! $authorization_profile->getProvider() || ! $authorization_profile->getConsumer() ) {
+      return;
+    }
+    $tokens = array();
+
+    $tokens += $authorization_profile->getProvider()->getTokens();
+    $tokens += $authorization_profile->getConsumer()->getTokens();
+
+    $form['conditions'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Conditions'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+    );
+
+    $synchronization_modes = array();
+    if ($this->synchOnLogon)  {
+      $synchronization_modes[] = 'user_logon';
+    }
+
+    $form['conditions']['synchronization_modes'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('When should <em>!consumer_namePlural</em> be granted/revoked from user?', $tokens),
+      '#options' => array(
+          'user_logon' => t('When a user logs on via <em>!provider_name</em>.', $tokens),
+      ),
+      '#default_value' => $authorization_profile->get('synchronization_modes'),
+      '#description' => '',
+    );
+
+    $synchronization_actions = array();
+    if ($this->provider->revokeProviderProvisioned)  {
+      $synchronization_actions[] = 'revoke_provider_provisioned';
+    }
+    if ($this->consumer->createConsumers)  {
+      $synchronization_actions[] = 'create_consumers';
+    }
+    if ($this->provider->regrantProviderProvisioned)  {
+      $synchronization_actions[] = 'regrant_provider_provisioned';
+    }
+
+    $options =  array(
+      'revoke_provider_provisioned' => t('Revoke <em>!consumer_namePlural</em> previously granted by <em>!provider_name</em> but no longer valid.', $tokens),
+      'regrant_provider_provisioned' => t('Re grant <em>!consumer_namePlural</em> previously granted by <em>!provider_name</em> but removed manually.', $tokens),
+    );
+    if ($this->consumer->allowConsumerObjectCreation) {
+      $options['create_consumers'] = t('Create <em>!consumer_namePlural</em> if they do not exist.', $tokens);
+    }
+
+    $form['conditions']['synchronization_actions'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('What actions would you like performed when <em>!consumer_namePlural</em> are granted/revoked from user?', $tokens),
+      '#options' => $options,
+      '#default_value' => $authorization_profile->get('synchronization_actions'),
+    );
+    /**
+     * @todo  some general options for an individual mapping (perhaps in an advance tab).
+     *
+     * - on synchronization allow: revoking authorizations made by this module, authorizations made outside of this module
+     * - on synchronization create authorization contexts not in existance when needed (drupal roles etc)
+     * - synchronize actual authorizations (not cached) when granting authorizations
+     */
   }
 
   public function buildMappingForm(array &$form, FormStateInterface $form_state, AuthorizationProfileInterface $authorization_profile) {

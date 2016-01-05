@@ -37,3 +37,9 @@ authorization.authorization_profile.*:
     status:
       type: boolean
       label: 'Enabled'
+    synchronization_modes:
+      type: sequence
+      label: 'Synchronization modes'
+    synchronization_actions:
+      type: sequence
+      label: 'Synchronization actions'

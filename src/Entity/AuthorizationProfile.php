@@ -247,5 +247,13 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
     return $this;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getTokens() {
+    $tokens = array();
+    $tokens['!profile_name'] = $this->label;
+    return $tokens;
+  }
 
 }

@@ -16,6 +16,8 @@ use Drupal\authorization\Form\SubFormState;
  */
 abstract class ConsumerPluginBase extends ConfigurablePluginBase implements ConsumerInterface {
 
+  public $type = 'consumer';
+
   public function submitRowForm(array &$form, SubFormState $form_state) {
     $values = $form_state->getValues();
     $consumer_mappings = array();
