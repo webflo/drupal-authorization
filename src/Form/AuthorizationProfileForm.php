@@ -351,10 +351,9 @@ class AuthorizationProfileForm extends EntityForm {
     $tokens += $authorization_profile->getConsumer()->getTokens();
 
     $form['conditions'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Conditions'),
-      '#collapsible' => TRUE,
-      '#collapsed' => FALSE,
+      '#type' => 'details',
+      '#title' => t('Configure conditions'),
+      '#open' => TRUE,
     );
 
     $synchronization_modes = array();
@@ -415,11 +414,16 @@ class AuthorizationProfileForm extends EntityForm {
       $provider = $authorization_profile->getProvider();
       $consumer = $authorization_profile->getConsumer();
 
+      $tokens = array();
+
+      $tokens += $provider->getTokens();
+      $tokens += $consumer->getTokens();
+
       $form['mappings'] = array(
         '#type' => 'table',
         '#responsive' => TRUE,
         '#weight' => 100,
-        '#title' => t('Mapping from LDAP Authorization to Drupal roles'),
+        '#title' => t('Configure mapping from !provider_name to !consumer_name', $tokens),
         '#header' => array($provider->label(), $consumer->label()),
         '#footer' => 'foo',
       );
