@@ -137,5 +137,12 @@ function authorization_get_consumers($consumer_type = NULL, $reset = FALSE, $fla
  */
 function authorization_user_login($account) {
   list($authorizations, $notifications) = authorization_user_authorizations($account, 'set', NULL, NULL, 'logon');
+
+  foreach ( $authorizations as $auth ) {
+    drupal_set_message($auth, 'status', TRUE);
+  }
+  foreach ( $notifications as $note ) {
+    drupal_set_message($note, 'status', TRUE);
+  }
 }
 

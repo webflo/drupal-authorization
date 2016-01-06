@@ -6,6 +6,8 @@
     $notifications = array();
     $watchdog_tokens = array('%username' => $user->getDisplayName());
 
+    $authentication_providers = array();
+
     // @TODO Move this into a setting as per ldap_authorization.
     $detailed_watchdog_log = TRUE;
 
@@ -25,6 +27,8 @@
     }
 
     $uid = $user->id();
+    $provider = $profile->getProvider();
+    $consumer = $profile->getConsumer();
 
     /**
      * Determine if user is authenticated using ldap authmap or external auth authmap
@@ -40,8 +44,20 @@
     if ( function_exists('ldap_user_get_identifier_from_map') ) {
       $identifier = ldap_user_get_identifier_from_map($uid);
       if ( $identifier ) {
-        drupal_set_message('LDAP user');
+        $authentication_providers[] = 'ldap_authentication';
       }
+    }
+
+    // Any users with a provider matching any of our provider handlers should now execute their authorizations.
+    if ( $handlers = array_intersect($authentication_providers, $provider->getHandlers() ) ) {
+      // Check the profile conditions
+      if ( $profile->checkConditions($user, $op) ) {
+        // Apply the profile map to the user
+        list($new_authorizations, $new_notifications) = $profile->apply($user);
+        $authorizations += $new_authorizations;
+        $notifications += $new_notifications;
+      }
+    } else {
     }
 
     return array($authorizations, $notifications);

@@ -256,4 +256,20 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
     return $tokens;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function checkConditions($user=NULL, $op=NULL) {
+    // @TODO
+    return TRUE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function apply($user=NULL, $op=NULL) {
+    // @TODO
+    return array(array($this->label), array("Done with " . $this->label));
+  }
+
 }

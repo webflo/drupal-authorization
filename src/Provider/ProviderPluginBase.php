@@ -17,6 +17,7 @@ use Drupal\authorization\Form\SubFormState;
 abstract class ProviderPluginBase extends ConfigurablePluginBase implements ProviderInterface {
 
   public $type = 'provider';
+  public $handlers = array();
 
   public function submitRowForm(array &$form, SubFormState $form_state) {
     $values = $form_state->getValues();
@@ -28,6 +29,10 @@ abstract class ProviderPluginBase extends ConfigurablePluginBase implements Prov
     $form_state->setValue('provider_mappings', $provider_mappings);
 
     parent::submitRowForm($form, $form_state);
+  }
+
+  public function getHandlers() {
+    return $this->handlers;
   }
 
 }
