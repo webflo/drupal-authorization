@@ -53,7 +53,7 @@
       // Check the profile conditions
       if ( $profile->checkConditions($user, $op) ) {
         // Apply the profile map to the user
-        list($new_authorizations, $new_notifications) = $profile->apply($user);
+        list($new_authorizations, $new_notifications) = $profile->apply($user, $op, $identifier);
         $authorizations += $new_authorizations;
         $notifications += $new_notifications;
       }

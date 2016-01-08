@@ -35,4 +35,8 @@ abstract class ProviderPluginBase extends ConfigurablePluginBase implements Prov
     return $this->handlers;
   }
 
+  public function apply($user, $op, $provider_mapping) {
+    return NULL;
+  }
+
 }

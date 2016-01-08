@@ -342,7 +342,7 @@ class AuthorizationProfileForm extends EntityForm {
   }
 
   public function buildConditionsForm(array &$form, FormStateInterface $form_state, AuthorizationProfileInterface $authorization_profile) {
-    if ( ! $authorization_profile->getProvider() || ! $authorization_profile->getConsumer() ) {
+    if ( ! $authorization_profile->hasValidProvider() || ! $authorization_profile->hasValidConsumer() ) {
       return;
     }
     $tokens = array();

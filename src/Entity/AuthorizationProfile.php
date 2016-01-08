@@ -261,14 +261,28 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
    */
   public function checkConditions($user=NULL, $op=NULL) {
     // @TODO
+    // Should check status enabled here if not already done.
+    // Check other conditions.
     return TRUE;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function apply($user=NULL, $op=NULL) {
-    // @TODO
+  public function apply($user=NULL, $op=NULL, $identifier=NULL) {
+    $provider = $this->getProvider();
+    $consumer = $this->getConsumer();
+    $provider_mappings = $this->getProviderMappings();
+    $consumer_mappings = $this->getConsumerMappings();
+
+    // Iterate through the mappings
+    foreach ( $provider_mappings as $i => $provider_mapping ) {
+      $incoming = $provider->apply($user, $op, $identifier, $provider_mapping);
+      if ( $incoming ) {
+        $consumer_mapping = $consumer_mappings[$i];
+        $outgoing = $consumer->apply($user, $op, $incoming, $consumer_mapping);
+      }
+    }
     return array(array($this->label), array("Done with " . $this->label));
   }
 
