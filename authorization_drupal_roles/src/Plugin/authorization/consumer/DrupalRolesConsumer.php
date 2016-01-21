@@ -85,7 +85,16 @@ class DrupalRolesConsumer extends ConsumerPluginBase {
   }
 
   /**
+   * extends revokeSingleAuthorization()
+   * {@inheritdoc}
+   */
+  public function revokeSingleAuthorization(&$user, $op, $incoming, $consumer_mapping, &$user_auth_data, $user_save=FALSE, $reset=FALSE) {
+    $user->removeRole($consumer_mapping['role']);
+  }
+
+  /**
    * extends grantSingleAuthorization()
+   * {@inheritdoc}
    */
   public function grantSingleAuthorization(&$user, $op, $incoming, $consumer_mapping, &$user_auth_data, $user_save=FALSE, $reset=FALSE) {
     $user->addRole($consumer_mapping['role']);
