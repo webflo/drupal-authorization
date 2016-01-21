@@ -29,7 +29,7 @@ abstract class ConsumerPluginBase extends ConfigurablePluginBase implements Cons
     parent::submitRowForm($form, $form_state);
   }
 
-  public function apply($user, $op, $consumer_mapping, $incoming) {
+  public function grantSingleAuthorization(&$user, $op, $incoming, $provider_mapping, &$user_auth_data, $user_save=FALSE, $reset=FALSE) {
     return NULL;
   }
 

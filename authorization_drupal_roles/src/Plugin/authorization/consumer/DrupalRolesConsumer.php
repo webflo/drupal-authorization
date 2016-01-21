@@ -83,4 +83,12 @@ class DrupalRolesConsumer extends ConsumerPluginBase {
     $tokens['!examples'] = '';
     return $tokens;
   }
+
+  /**
+   * extends grantSingleAuthorization()
+   */
+  public function grantSingleAuthorization(&$user, $op, $incoming, $consumer_mapping, &$user_auth_data, $user_save=FALSE, $reset=FALSE) {
+    $user->addRole($consumer_mapping['role']);
+  }
+
 }

@@ -52,8 +52,9 @@
     if ( $handlers = array_intersect($authentication_providers, $provider->getHandlers() ) ) {
       // Check the profile conditions
       if ( $profile->checkConditions($user, $op) ) {
+        $user_save = TRUE;
         // Apply the profile map to the user
-        list($new_authorizations, $new_notifications) = $profile->apply($user, $op, $identifier);
+        list($new_authorizations, $new_notifications) = $profile->grantsAndRevokes($op, $user, $user_auth_data, $identifier, $user_save);
         $authorizations += $new_authorizations;
         $notifications += $new_notifications;
       }

@@ -269,7 +269,7 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
   /**
    * {@inheritdoc}
    */
-  public function apply($user=NULL, $op=NULL, $identifier=NULL) {
+  public function grantsAndRevokes($op=NULL, &$user=NULL, &$user_auth_data, $identifier=NULL, $user_save=TRUE) {
     $provider = $this->getProvider();
     $consumer = $this->getConsumer();
     $provider_mappings = $this->getProviderMappings();
@@ -280,8 +280,12 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
       $incoming = $provider->apply($user, $op, $identifier, $provider_mapping);
       if ( $incoming ) {
         $consumer_mapping = $consumer_mappings[$i];
-        $outgoing = $consumer->apply($user, $op, $incoming, $consumer_mapping);
+        $outgoing = $consumer->grantSingleAuthorization($user, $op, $incoming, $consumer_mapping);
+        $needs_save = TRUE;
       }
+    }
+    if ( $needs_save && $user_save ) {
+      $user->save();
     }
     return array(array($this->label), array("Done with " . $this->label));
   }
