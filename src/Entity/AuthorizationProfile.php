@@ -276,11 +276,14 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
     $consumer_mappings = $this->getConsumerMappings();
 
     // Iterate through the mappings
+    // Provider Proposals are proposed authorizations (eg: groups)
+    // @TODO Then they should be filtered by the config
+    // Then applied to the Consumer
     foreach ( $provider_mappings as $i => $provider_mapping ) {
-      $incoming = $provider->apply($user, $op, $identifier, $provider_mapping);
-      if ( $incoming ) {
+      $proposals = $provider->getProposals($user, $op, $identifier, $provider_mapping);
+      if ( $proposals ) {
         $consumer_mapping = $consumer_mappings[$i];
-        $outgoing = $consumer->grantSingleAuthorization($user, $op, $incoming, $consumer_mapping);
+        $outgoing = $consumer->grantSingleAuthorization($user, $op, $proposals, $consumer_mapping);
         $needs_save = TRUE;
       }
     }
