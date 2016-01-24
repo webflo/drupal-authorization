@@ -345,6 +345,13 @@ class AuthorizationProfileForm extends EntityForm {
     if ( ! $authorization_profile->hasValidProvider() || ! $authorization_profile->hasValidConsumer() ) {
       return;
     }
+    if ( ! $this->provider ) {
+      $this->provider = $authorization_profile->getProvider();
+    }
+    if ( ! $this->consumer ) {
+      $this->consumer = $authorization_profile->getConsumer();
+    }
+
     $tokens = array();
 
     $tokens += $authorization_profile->getProvider()->getTokens();
@@ -375,7 +382,7 @@ class AuthorizationProfileForm extends EntityForm {
     if ($this->provider->revokeProviderProvisioned)  {
       $synchronization_actions[] = 'revoke_provider_provisioned';
     }
-    if ($this->consumer->createConsumers)  {
+    if ($this->consumer->createConsumers())  {
       $synchronization_actions[] = 'create_consumers';
     }
     if ($this->provider->regrantProviderProvisioned)  {

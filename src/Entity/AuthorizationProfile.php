@@ -289,11 +289,13 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
 
     // Iterate through the mappings
     foreach ( $provider_mappings as $i => $provider_mapping ) {
+      $consumer_mapping = $consumer_mappings[$i];
       if ( $provider->filterProposals($proposals, $op, $provider_mapping) ) {
-        $consumer_mapping = $consumer_mappings[$i];
         $outgoing = $consumer->grantSingleAuthorization($user, $op, $proposals, $consumer_mapping);
-        $needs_save = TRUE;
+      } else if ( $this->get('revoke_provider_provisioned') ) {
+        $outgoing = $consumer->revokeSingleAuthorization($user, $op, $proposals, $consumer_mapping);
       }
+      $needs_save = TRUE;
     }
     if ( $needs_save && $user_save ) {
       $user->save();

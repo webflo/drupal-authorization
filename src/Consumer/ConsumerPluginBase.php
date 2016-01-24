@@ -17,6 +17,7 @@ use Drupal\authorization\Form\SubFormState;
 abstract class ConsumerPluginBase extends ConfigurablePluginBase implements ConsumerInterface {
 
   public $type = 'consumer';
+  protected $allowConsumerObjectCreation = NULL;
 
   public function submitRowForm(array &$form, SubFormState $form_state) {
     $values = $form_state->getValues();
@@ -62,6 +63,10 @@ abstract class ConsumerPluginBase extends ConfigurablePluginBase implements Cons
    */
   public function grantSingleAuthorization(&$user, $op, $incoming, $consumer_mapping, &$user_auth_data, $user_save=FALSE, $reset=FALSE) {
      // method must be overridden
+  }
+
+  public function createConsumers() {
+    return $this->allowConsumerObjectCreation;
   }
 
 }

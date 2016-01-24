@@ -19,6 +19,8 @@ use Drupal\authorization\Consumer\ConsumerPluginBase;
  */
 class DrupalRolesConsumer extends ConsumerPluginBase {
 
+  public $allowConsumerObjectCreation = TRUE;
+
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form['description'] = array(
       '#type' => 'markup',
