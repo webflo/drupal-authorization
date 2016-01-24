@@ -260,8 +260,11 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
    * {@inheritdoc}
    */
   public function checkConditions($user=NULL, $op=NULL) {
+    // Check if the profile is enabled.
+    if ( ! $this->get('status') ) {
+      return FALSE;
+    }
     // @TODO
-    // Should check status enabled here if not already done.
     // Check other conditions.
     return TRUE;
   }
@@ -275,13 +278,18 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
     $provider_mappings = $this->getProviderMappings();
     $consumer_mappings = $this->getConsumerMappings();
 
-    // Iterate through the mappings
     // Provider Proposals are proposed authorizations (eg: groups)
-    // @TODO Then they should be filtered by the config
-    // Then applied to the Consumer
+    $proposals = $provider->getProposals($user, $op, $identifier);
+
+    // @TODO Then they should be filtered or mapped by the mapping.
+    //   Filtering is currently is done by the provider.
+    //   To follow the old pattern it should be done in the profile.
+    // Then applied to the Consumer.
+    // @TODO In 7.x all the proposals were given to the consumer as a group.
+
+    // Iterate through the mappings
     foreach ( $provider_mappings as $i => $provider_mapping ) {
-      $proposals = $provider->getProposals($user, $op, $identifier, $provider_mapping);
-      if ( $proposals ) {
+      if ( $provider->filterProposals($proposals, $op, $provider_mapping) ) {
         $consumer_mapping = $consumer_mappings[$i];
         $outgoing = $consumer->grantSingleAuthorization($user, $op, $proposals, $consumer_mapping);
         $needs_save = TRUE;

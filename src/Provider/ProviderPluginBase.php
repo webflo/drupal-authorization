@@ -39,4 +39,8 @@ abstract class ProviderPluginBase extends ConfigurablePluginBase implements Prov
     return NULL;
   }
 
+  public function filterProposals($proposals, $op, $provider_mapping) {
+    return FALSE;
+  }
+
 }
