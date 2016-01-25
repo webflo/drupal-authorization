@@ -40,7 +40,9 @@ abstract class ProviderPluginBase extends ConfigurablePluginBase implements Prov
   }
 
   public function filterProposals($proposals, $op, $provider_mapping) {
-    return FALSE;
+    return array();
   }
+
+  public function sanitizeProposals($proposals, $op) {}
 
 }

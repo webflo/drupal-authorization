@@ -280,7 +280,6 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
 
     // Provider Proposals are proposed authorizations (eg: groups)
     $proposals = $provider->getProposals($user, $op, $identifier);
-
     // @TODO Then they should be filtered or mapped by the mapping.
     //   Filtering is currently is done by the provider.
     //   To follow the old pattern it should be done in the profile.
@@ -290,8 +289,10 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
     // Iterate through the mappings
     foreach ( $provider_mappings as $i => $provider_mapping ) {
       $consumer_mapping = $consumer_mappings[$i];
-      if ( $provider->filterProposals($proposals, $op, $provider_mapping) ) {
-        $outgoing = $consumer->grantSingleAuthorization($user, $op, $proposals, $consumer_mapping);
+      $filtered_proposals = $provider->filterProposals($proposals, $op, $provider_mapping);
+      if ( count($filtered_proposals) ) {
+        $filtered_proposals = $provider->sanitizeProposals($filtered_proposals);
+        $outgoing = $consumer->grantSingleAuthorization($user, $op, $filtered_proposals, $consumer_mapping);
       } else if ( $this->get('revoke_provider_provisioned') ) {
         $outgoing = $consumer->revokeSingleAuthorization($user, $op, $proposals, $consumer_mapping);
       }
