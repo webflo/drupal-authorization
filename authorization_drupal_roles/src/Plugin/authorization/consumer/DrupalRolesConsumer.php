@@ -19,7 +19,7 @@ use Drupal\authorization\Consumer\ConsumerPluginBase;
  */
 class DrupalRolesConsumer extends ConsumerPluginBase {
 
-  public $allowConsumerObjectCreation = TRUE;
+  public $allowConsumerTargetCreation = TRUE;
 
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form['description'] = array(
@@ -103,10 +103,10 @@ class DrupalRolesConsumer extends ConsumerPluginBase {
   }
 
   /**
-   * extends createConsumer()
+   * extends createConsumerTarget()
    * {@inheritdoc}
    */
-  public function createConsumer($consumer_id, $consumer) {
+  public function createConsumerTarget($consumer_id, $consumer) {
     //  @TODO
   }
 

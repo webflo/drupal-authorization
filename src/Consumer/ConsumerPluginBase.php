@@ -17,7 +17,7 @@ use Drupal\authorization\Form\SubFormState;
 abstract class ConsumerPluginBase extends ConfigurablePluginBase implements ConsumerInterface {
 
   public $type = 'consumer';
-  protected $allowConsumerObjectCreation = NULL;
+  protected $allowConsumerTargetCreation = NULL;
 
   public function submitRowForm(array &$form, SubFormState $form_state) {
     $values = $form_state->getValues();
@@ -68,13 +68,13 @@ abstract class ConsumerPluginBase extends ConfigurablePluginBase implements Cons
   /*
    * Are we allowed to create things (roles for example)?
    */
-  public function createConsumers() {
-    return $this->allowConsumerObjectCreation;
+  public function createConsumerTargets() {
+    return $this->allowConsumerTargetCreation;
   }
 
   /**
    *
-   * create authorization consumers
+   * Create authorization consumer targets
    *
    * @param string (lowercase) $consumer_id
    * @param array $consumer as associative array with the following key/values
@@ -86,7 +86,7 @@ abstract class ConsumerPluginBase extends ConfigurablePluginBase implements Cons
    *               NULL indicate consumer's existance not checked yet
    *
    */
-  public function createConsumer($consumer_id, $consumer) {
+  public function createConsumerTarget($consumer_id, $consumer) {
     // method must be overridden
   }
 

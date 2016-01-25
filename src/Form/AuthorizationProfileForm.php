@@ -393,7 +393,7 @@ class AuthorizationProfileForm extends EntityForm {
       'revoke_provider_provisioned' => t('Revoke <em>!consumer_namePlural</em> previously granted by <em>!provider_name</em> but no longer valid.', $tokens),
       'regrant_provider_provisioned' => t('Re grant <em>!consumer_namePlural</em> previously granted by <em>!provider_name</em> but removed manually.', $tokens),
     );
-    if ($this->consumer->allowConsumerObjectCreation) {
+    if ($this->consumer->allowConsumerTargetCreation) {
       $options['create_consumers'] = t('Create <em>!consumer_namePlural</em> if they do not exist.', $tokens);
     }
 
