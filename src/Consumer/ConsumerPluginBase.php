@@ -65,8 +65,29 @@ abstract class ConsumerPluginBase extends ConfigurablePluginBase implements Cons
      // method must be overridden
   }
 
+  /*
+   * Are we allowed to create things (roles for example)?
+   */
   public function createConsumers() {
     return $this->allowConsumerObjectCreation;
+  }
+
+  /**
+   *
+   * create authorization consumers
+   *
+   * @param string (lowercase) $consumer_id
+   * @param array $consumer as associative array with the following key/values
+   *   'value' => NULL | mixed consumer such as drupal role name, og group entity, etc.
+   *   'name' => name of consumer for UI, logging etc.
+   *   'map_to_string' => string mapped to in ldap authorization.  mixed case string
+   *   'exists' => TRUE indicates consumer is known to exist,
+   *               FALSE indicates consumer is known to not exist,
+   *               NULL indicate consumer's existance not checked yet
+   *
+   */
+  public function createConsumer($consumer_id, $consumer) {
+    // method must be overridden
   }
 
 }

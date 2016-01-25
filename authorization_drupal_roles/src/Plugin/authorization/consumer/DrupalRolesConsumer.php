@@ -102,4 +102,12 @@ class DrupalRolesConsumer extends ConsumerPluginBase {
     $user->addRole($consumer_mapping['role']);
   }
 
+  /**
+   * extends createConsumer()
+   * {@inheritdoc}
+   */
+  public function createConsumer($consumer_id, $consumer) {
+    //  @TODO
+  }
+
 }
