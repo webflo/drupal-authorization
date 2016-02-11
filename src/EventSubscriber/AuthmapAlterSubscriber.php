@@ -3,7 +3,7 @@
  * Contains \Drupal\authorization\EventSubscriber\AuthmapAlterSubscriber.
  */
 
-namespace Drupal\authorization\AuthmapAlterSubscriber;
+namespace Drupal\authorization\EventSubscriber;
 
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

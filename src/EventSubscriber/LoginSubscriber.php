@@ -3,7 +3,7 @@
  * Contains \Drupal\authorization\EventSubscriber\LoginSubscriber.
  */
 
-namespace Drupal\authorization\LoginSubscriber;
+namespace Drupal\authorization\EventSubscriber;
 
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

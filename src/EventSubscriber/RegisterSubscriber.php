@@ -3,7 +3,7 @@
  * Contains \Drupal\authorization\EventSubscriber\RegisterSubscriber.
  */
 
-namespace Drupal\authorization\RegisterSubscriber;
+namespace Drupal\authorization\EventSubscriber;
 
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
