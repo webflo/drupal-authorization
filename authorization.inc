@@ -19,10 +19,8 @@
       if ($detailed_watchdog_log) {
       \Drupal::logger('authorization')->debug('%username : authorization not applied to user 1', $watchdog_tokens);
       }
+      $authorizations = array();
       $notifications['all'] = AUTHORIZATION_NOT_APPLY_USER_1;
-      foreach ($consumers as $consumer_type => $consumer) {
-        $authorizations[$consumer_type] = array();
-      }
       return array($authorizations, $notifications);
     }
 
