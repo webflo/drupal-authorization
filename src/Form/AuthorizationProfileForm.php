@@ -39,6 +39,11 @@ class AuthorizationProfileForm extends EntityForm {
     $this->storage = $entity_manager->getStorage('authorization_profile');
     $this->ProviderPluginManager = $provider_plugin_manager;
     $this->ConsumerPluginManager = $consumer_plugin_manager;
+    // if ( $this->ConsumerPluginManager->allowConsumerTargetCreation() ) {
+    //   drupal_set_message("Can create objects");
+    // } else {
+    //   drupal_set_message("Can't create objects", "error");
+    // }
   }
 
 
