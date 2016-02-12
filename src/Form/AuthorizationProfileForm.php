@@ -382,7 +382,7 @@ class AuthorizationProfileForm extends EntityForm {
     if ($this->provider->revokeProviderProvisioned)  {
       $synchronization_actions[] = 'revoke_provider_provisioned';
     }
-    if ($this->consumer->createConsumers())  {
+    if ($this->consumer->createConsumerTargets())  {
       $synchronization_actions[] = 'create_consumers';
     }
     if ($this->provider->regrantProviderProvisioned)  {
