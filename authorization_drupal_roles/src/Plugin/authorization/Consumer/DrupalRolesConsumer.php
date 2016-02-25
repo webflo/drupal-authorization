@@ -92,6 +92,9 @@ class DrupalRolesConsumer extends ConsumerPluginBase {
    */
   public function revokeSingleAuthorization(&$user, $op, $incoming, $consumer_mapping, &$user_auth_data, $user_save=FALSE, $reset=FALSE) {
     $user->removeRole($consumer_mapping['role']);
+    if ( $user_save ) {
+      $user->save();
+    }
   }
 
   /**
@@ -100,6 +103,9 @@ class DrupalRolesConsumer extends ConsumerPluginBase {
    */
   public function grantSingleAuthorization(&$user, $op, $incoming, $consumer_mapping, &$user_auth_data, $user_save=FALSE, $reset=FALSE) {
     $user->addRole($consumer_mapping['role']);
+    if ( $user_save ) {
+      $user->save();
+    }
   }
 
   /**
