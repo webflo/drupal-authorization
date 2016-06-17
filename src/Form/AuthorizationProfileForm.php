@@ -375,9 +375,9 @@ class AuthorizationProfileForm extends EntityForm {
 
     $form['conditions']['synchronization_modes'] = array(
       '#type' => 'checkboxes',
-      '#title' => t('When should <em>!consumer_namePlural</em> be granted/revoked from user?', $tokens),
+      '#title' => t('When should <em>@consumer_namePlural</em> be granted/revoked from user?', $tokens),
       '#options' => array(
-          'user_logon' => t('When a user logs on via <em>!provider_name</em>.', $tokens),
+          'user_logon' => t('When a user logs on via <em>@provider_name</em>.', $tokens),
       ),
       '#default_value' => $authorization_profile->get('synchronization_modes'),
       '#description' => '',
@@ -395,16 +395,16 @@ class AuthorizationProfileForm extends EntityForm {
     }
 
     $options =  array(
-      'revoke_provider_provisioned' => t('Revoke <em>!consumer_namePlural</em> previously granted by <em>!provider_name</em> but no longer valid.', $tokens),
-      'regrant_provider_provisioned' => t('Re grant <em>!consumer_namePlural</em> previously granted by <em>!provider_name</em> but removed manually.', $tokens),
+      'revoke_provider_provisioned' => t('Revoke <em>@consumer_namePlural</em> previously granted by <em>@provider_name</em> but no longer valid.', $tokens),
+      'regrant_provider_provisioned' => t('Re grant <em>@consumer_namePlural</em> previously granted by <em>@provider_name</em> but removed manually.', $tokens),
     );
     if ($this->consumer->allowConsumerTargetCreation) {
-      $options['create_consumers'] = t('Create <em>!consumer_namePlural</em> if they do not exist.', $tokens);
+      $options['create_consumers'] = t('Create <em>@consumer_namePlural</em> if they do not exist.', $tokens);
     }
 
     $form['conditions']['synchronization_actions'] = array(
       '#type' => 'checkboxes',
-      '#title' => t('What actions would you like performed when <em>!consumer_namePlural</em> are granted/revoked from user?', $tokens),
+      '#title' => t('What actions would you like performed when <em>@consumer_namePlural</em> are granted/revoked from user?', $tokens),
       '#options' => $options,
       '#default_value' => $authorization_profile->get('synchronization_actions'),
     );
@@ -435,7 +435,7 @@ class AuthorizationProfileForm extends EntityForm {
         '#type' => 'table',
         '#responsive' => TRUE,
         '#weight' => 100,
-        '#title' => t('Configure mapping from !provider_name to !consumer_name', $tokens),
+        '#title' => t('Configure mapping from @provider_name to @consumer_name', $tokens),
         '#header' => array($provider->label(), $consumer->label()),
         '#footer' => 'foo',
       );

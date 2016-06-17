@@ -79,10 +79,10 @@ class DrupalRolesConsumer extends ConsumerPluginBase {
 
   public function getTokens() {
     $tokens = array();
-    $tokens['!' . $this->getType() . '_namePlural'] = $this->label();
-    $tokens['!' . $this->getType() . '_name'] = 'Drupal role';
-    $tokens['!' . $this->getType() . '_mappingDirections'] = '';
-    $tokens['!examples'] = '';
+    $tokens['@' . $this->getType() . '_namePlural'] = $this->label();
+    $tokens['@' . $this->getType() . '_name'] = 'Drupal role';
+    $tokens['@' . $this->getType() . '_mappingDirections'] = '';
+    $tokens['@examples'] = '';
     return $tokens;
   }
 

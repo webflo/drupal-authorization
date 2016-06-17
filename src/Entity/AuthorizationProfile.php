@@ -252,7 +252,7 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
    */
   public function getTokens() {
     $tokens = array();
-    $tokens['!profile_name'] = $this->label;
+    $tokens['@profile_name'] = $this->label;
     return $tokens;
   }
 
