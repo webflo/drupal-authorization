@@ -273,7 +273,10 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
    * {@inheritdoc}
    */
   public function grantsAndRevokes($op=NULL, &$user=NULL, &$user_auth_data, $identifier=NULL, $user_save=TRUE) {
+
+    /* @var \Drupal\authorization\Provider\ProviderPluginBase $provider */
     $provider = $this->getProvider();
+    /* @var \Drupal\authorization\Consumer\ConsumerPluginBase $consumer */
     $consumer = $this->getConsumer();
     $provider_mappings = $this->getProviderMappings();
     $consumer_mappings = $this->getConsumerMappings();
@@ -290,12 +293,13 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
     foreach ( $provider_mappings as $i => $provider_mapping ) {
       $consumer_mapping = $consumer_mappings[$i];
       $filtered_proposals = $provider->filterProposals($proposals, $op, $provider_mapping);
-      if ( count($filtered_proposals) ) {
+      if (count($filtered_proposals) ) {
+        //@FIXME: Syntax has changed here, $create cannot be used.
         $create = $this->get('synchronization_actions')['create_consumers'] ? TRUE : FALSE;
-        $filtered_proposals = $provider->sanitizeProposals($filtered_proposals);
-        $outgoing = $consumer->grantSingleAuthorization($user, $op, $filtered_proposals, $consumer_mapping, $user_auth_data, $user_save, $reset, $create);
+        $filtered_proposals = $provider->sanitizeProposals($filtered_proposals, $op);
+        $outgoing = $consumer->grantSingleAuthorization($user, $op, $filtered_proposals, $consumer_mapping, $user_auth_data, $user_save, FALSE);
       } else if ( $this->get('revoke_provider_provisioned') ) {
-        $outgoing = $consumer->revokeSingleAuthorization($user, $op, $proposals, $consumer_mapping);
+        $outgoing = $consumer->revokeSingleAuthorization($user, $op, $proposals, $consumer_mapping, $user_auth_data);
       }
       $needs_save = TRUE;
     }
