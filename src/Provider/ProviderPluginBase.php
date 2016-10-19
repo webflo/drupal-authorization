@@ -8,8 +8,7 @@
 namespace Drupal\authorization\Provider;
 
 use Drupal\authorization\Plugin\ConfigurablePluginBase;
-use Drupal\authorization\Provider\ProviderInterface;
-use Drupal\authorization\Form\SubFormState;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Base class for Authorization provider plugins.
@@ -19,7 +18,7 @@ abstract class ProviderPluginBase extends ConfigurablePluginBase implements Prov
   public $type = 'provider';
   public $handlers = array();
 
-  public function submitRowForm(array &$form, SubFormState $form_state) {
+  public function submitRowForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
     // Create an array of just the provider values
     $provider_mappings = array();

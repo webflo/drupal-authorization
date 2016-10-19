@@ -8,8 +8,7 @@
 namespace Drupal\authorization\Consumer;
 
 use Drupal\authorization\Plugin\ConfigurablePluginBase;
-use Drupal\authorization\Consumer\ConsumerInterface;
-use Drupal\authorization\Form\SubFormState;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Base class for Authorization consumer plugins.
@@ -19,7 +18,7 @@ abstract class ConsumerPluginBase extends ConfigurablePluginBase implements Cons
   public $type = 'consumer';
   protected $allowConsumerTargetCreation = NULL;
 
-  public function submitRowForm(array &$form, SubFormState $form_state) {
+  public function submitRowForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
     $consumer_mappings = array();
     foreach ($values as $key => $value) {
