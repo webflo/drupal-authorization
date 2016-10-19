@@ -40,3 +40,11 @@ entity.authorization_profile.delete_form:
   options:
     _admin_route: TRUE
 
+entity.authorization_profile.configuration_form:
+  path: '/admin/config/people/authorization/profile/settings'
+  defaults:
+    _form: '\Drupal\authorization\Form\AuthorizationSettingsForm'
+    _title: 'Authorization settings'
+  requirements:
+    _permission: 'administer site configuration'
+
