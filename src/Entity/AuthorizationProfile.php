@@ -283,6 +283,7 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
 
     // Provider Proposals are proposed authorizations (eg: groups)
     $proposals = $provider->getProposals($user, $op, $identifier);
+    $proposals = $provider->sanitizeProposals($proposals, $op);
     // @TODO Then they should be filtered or mapped by the mapping.
     //   Filtering is currently is done by the provider.
     //   To follow the old pattern it should be done in the profile.
