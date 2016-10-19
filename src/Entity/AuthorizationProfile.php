@@ -297,9 +297,8 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
       if (count($filtered_proposals) ) {
         //@FIXME: Syntax has changed here, $create cannot be used.
         $create = $this->get('synchronization_actions')['create_consumers'] ? TRUE : FALSE;
-        $filtered_proposals = $provider->sanitizeProposals($filtered_proposals, $op);
         $outgoing = $consumer->grantSingleAuthorization($user, $op, $filtered_proposals, $consumer_mapping, $user_auth_data, $user_save, FALSE);
-      } else if ( $this->get('revoke_provider_provisioned') ) {
+      } else if ( $this->get('synchronization_actions')['revoke_provider_provisioned'] ) {
         $outgoing = $consumer->revokeSingleAuthorization($user, $op, $proposals, $consumer_mapping, $user_auth_data);
       }
       $needs_save = TRUE;
