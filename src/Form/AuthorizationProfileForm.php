@@ -26,6 +26,16 @@ use Drupal\authorization\Consumer\ConsumerPluginManager;
 class AuthorizationProfileForm extends EntityForm {
 
   /**
+   * @var \Drupal\authorization\Provider\ProviderPluginManager
+   */
+  protected $providerPluginManager;
+
+  /**
+   * @var \Drupal\authorization\Consumer\ConsumerPluginManager;
+   */
+  protected $consumerPluginManager;
+
+  /**
    * Constructs a AuthorizationProfileForm object.
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
@@ -37,8 +47,8 @@ class AuthorizationProfileForm extends EntityForm {
    */
   public function __construct(EntityManagerInterface $entity_manager, ProviderPluginManager $provider_plugin_manager, ConsumerPluginManager $consumer_plugin_manager) {
     $this->storage = $entity_manager->getStorage('authorization_profile');
-    $this->ProviderPluginManager = $provider_plugin_manager;
-    $this->ConsumerPluginManager = $consumer_plugin_manager;
+    $this->providerPluginManager = $provider_plugin_manager;
+    $this->consumerPluginManager = $consumer_plugin_manager;
     // if ( $this->ConsumerPluginManager->allowConsumerTargetCreation() ) {
     //   drupal_set_message("Can create objects");
     // } else {
@@ -46,17 +56,15 @@ class AuthorizationProfileForm extends EntityForm {
     // }
   }
 
-
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    /** @var \Drupal\Core\Entity\EntityManagerInterface $entity_manager */
-    $entity_manager = $container->get('entity.manager');
-    /** @var \Drupal\authorization\Backend\BackendPluginManager $backend_plugin_manager */
-    $provider_plugin_manager = $container->get('plugin.manager.authorization.provider');
-    $consumer_plugin_manager = $container->get('plugin.manager.authorization.consumer');
-    return new static($entity_manager, $provider_plugin_manager, $consumer_plugin_manager);
+    return new static(
+      $container->get('entity.manager'),
+      $container->get('plugin.manager.authorization.provider'),
+      $container->get('plugin.manager.authorization.consumer')
+    );
   }
 
   /**
@@ -66,7 +74,10 @@ class AuthorizationProfileForm extends EntityForm {
    *   The Provider plugin manager.
    */
   protected function getProviderPluginManager() {
-    return $this->providerPluginManager ?: \Drupal::service('plugin.manager.authorization.provider');
+    if (!$this->providerPluginManager) {
+      $this->providerPluginManager = \Drupal::service('plugin.manager.authorization.provider');
+    }
+    return $this->providerPluginManager;
   }
 
   /**
@@ -76,7 +87,10 @@ class AuthorizationProfileForm extends EntityForm {
    *   The Consumer plugin manager.
    */
   protected function getConsumerPluginManager() {
-    return $this->consumerPluginManager ?: \Drupal::service('plugin.manager.authorization.consumer');
+    if ($this->consumerPluginManager) {
+      $this->consumerPluginManager = \Drupal::service('plugin.manager.authorization.consumer');
+    }
+    return $this->consumerPluginManager;
   }
 
   /**
@@ -520,7 +534,7 @@ class AuthorizationProfileForm extends EntityForm {
       // Move provider_mappings to the top level
       // @TODO fix this. Why do we have to do it? Why doesn't it work?
       $values = $form_state->getValues();
-      
+
       $values['provider_mappings'] = $values['mappings']['provider_mappings'];
       unset($values['mappings']['provider_mappings']);
       $values['consumer_mappings'] = $values['mappings']['consumer_mappings'];
