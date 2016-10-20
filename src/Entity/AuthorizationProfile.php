@@ -7,6 +7,7 @@
 
 namespace Drupal\authorization\Entity;
 
+use Drupal\authorization\AuthorizationSkipAuthorization;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\authorization\AuthorizationProfileInterface;
 
@@ -282,7 +283,12 @@ class AuthorizationProfile extends ConfigEntityBase implements AuthorizationProf
     $consumer_mappings = $this->getConsumerMappings();
 
     // Provider Proposals are proposed authorizations (eg: groups)
-    $proposals = $provider->getProposals($user, $op, $identifier);
+    try {
+      $proposals = $provider->getProposals($user, $op, $identifier);
+    } catch (AuthorizationSkipAuthorization $e) {
+      return array(array($this->label), array("Done with " . $this->label . ' (Skipped)'));
+    }
+
     $proposals = $provider->sanitizeProposals($proposals, $op);
     // @TODO Then they should be filtered or mapped by the mapping.
     //   Filtering is currently is done by the provider.
